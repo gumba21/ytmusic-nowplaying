@@ -1,7 +1,16 @@
 import express from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 
 const app = express();
+
+// allow requests from YouTube Music (or use "*" if you prefer)
+app.use(cors({
+  origin: "https://music.youtube.com",
+  methods: ["POST", "GET"],
+  allowedHeaders: ["Content-Type"],
+}));
+
 app.use(bodyParser.json());
 
 let nowPlaying = "nothing playing :[";
@@ -17,7 +26,6 @@ app.get("/", (req, res) => {
         color: #fff;
         font-size: 1.5em;
         margin-top: 20vh;
-      }
     </style>
     <div>🎵 now playing: ${nowPlaying}</div>
   `);
