@@ -4,7 +4,6 @@ import cors from "cors";
 
 const app = express();
 
-// allow requests from YouTube Music (or use "*" if you prefer)
 app.use(cors({
   origin: "https://music.youtube.com",
   methods: ["POST", "GET"],
@@ -15,8 +14,9 @@ app.use(bodyParser.json());
 
 let nowPlaying = "nothing playing :[";
 
-// show it on the web page
+// main page
 app.get("/", (req, res) => {
+  res.set("Cache-Control", "no-store");
   res.send(`
     <style>
       body {
@@ -26,12 +26,19 @@ app.get("/", (req, res) => {
         color: #fff;
         font-size: 1.5em;
         margin-top: 20vh;
+      }
     </style>
     <div>🎵 now playing: ${nowPlaying}</div>
   `);
 });
 
-// receive updates from your userscript
+// new JSON route
+app.get("/json", (req, res) => {
+  res.set("Cache-Control", "no-store");
+  res.json({ nowPlaying });
+});
+
+// receive updates from userscript
 app.post("/update", (req, res) => {
   const { title, artist } = req.body;
   nowPlaying = `${title} - ${artist}`;
